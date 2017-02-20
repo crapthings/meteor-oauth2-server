@@ -13,11 +13,19 @@ const Index = Container((props, onData) => {
     <thead>
       <tr>
         <td>_id</td>
+        <td>client name</td>
+        <td>client id</td>
+        <td>client secret</td>
+        <td>client redirect uri</td>
       </tr>
     </thead>
     <tbody>
       {clients.map(client => <tr key={client._id}>
-        <td>1</td>
+        <td>{client._id}</td>
+        <td>{client.clientName}</td>
+        <td>{client.clientId}</td>
+        <td>{client.clientSecret}</td>
+        <td>{client.redirectUri}</td>
       </tr>)}
     </tbody>
   </table>
