@@ -1,6 +1,13 @@
 const Index = Container((props, onData) => {
-  const users = Users.find().fetch()
-  onData(null, { users })
+  const loaded = Meteor.subscribe('users').ready()
+  if (loaded) {
+    const users = Users.find({}, {
+      sort: {
+        createdAt: -1
+      }
+    }).fetch()
+    onData(null, { users })
+  }
 })(({ users }) => <div>
   <table>
     <thead>
