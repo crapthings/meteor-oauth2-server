@@ -1,3 +1,6 @@
+var clientsCollection = new Meteor.Collection('OAuth2Clients');
+oAuth2Server.collections.client = clientsCollection;
+
 oAuth2Server.subscribeTo = {
     authCode: function() {
         return Meteor.subscribe(oAuth2Server.pubSubNames.authCodes);
