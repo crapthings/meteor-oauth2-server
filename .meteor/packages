@@ -25,3 +25,4 @@ standard-minifier-css
 standard-minifier-js
 shell-server
 kadira:flow-router
+stylus
