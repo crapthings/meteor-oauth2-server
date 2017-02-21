@@ -9,26 +9,48 @@ const Index = Container((props, onData) => {
     onData(null, { clients })
   }
 })(({ clients }) => <div>
-  <table>
-    <thead>
-      <tr>
-        <td>_id</td>
-        <td>client name</td>
-        <td>client id</td>
-        <td>client secret</td>
-        <td>client redirect uri</td>
-      </tr>
-    </thead>
-    <tbody>
-      {clients.map(client => <tr key={client._id}>
-        <td>{client._id}</td>
-        <td>{client.clientName}</td>
-        <td>{client.clientId}</td>
-        <td>{client.clientSecret}</td>
-        <td>{client.redirectUri}</td>
-      </tr>)}
-    </tbody>
-  </table>
+  <form id='client-form' onSubmit={submit}>
+    <table>
+      <thead>
+        <tr>
+          <td>_id</td>
+          <td>client name</td>
+          <td>client id</td>
+          <td>client secret</td>
+          <td>client redirect uri</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td className='ui-unpadded'>
+            <input className='ui-fit-width ui-padded-sm ui-unbordered' type='text' name='clientName' />
+          </td>
+          <td className='ui-unpadded'>
+            <input className='ui-fit-width ui-padded-sm ui-unbordered' type='text' name='clientId' />
+          </td>
+          <td className='ui-unpadded'>
+            <input className='ui-fit-width ui-padded-sm ui-unbordered' type='text' name='clientSecret' />
+          </td>
+          <td className='ui-unpadded'>
+            <input className='ui-fit-width ui-padded-sm ui-unbordered' type='text' name='redirectUri' />
+          </td>
+          <td className='ui-unpadded ui-align-center'>
+            <input className='ui-padded-sm' type='submit' value='提交' />
+          </td>
+        </tr>
+        {clients.map(client => <tr key={client._id}>
+          <td>{client._id}</td>
+          <td>{client.clientName}</td>
+          <td>{client.clientId}</td>
+          <td>{client.clientSecret}</td>
+          <td>{client.redirectUri}</td>
+          <td></td>
+        </tr>)}
+      </tbody>
+    </table>
+  </form>
 </div>)
 
 FlowRouter.route('/clients', {
@@ -38,3 +60,9 @@ FlowRouter.route('/clients', {
 
   name: 'clients',
 })
+
+function submit(e) {
+  e.preventDefault()
+  const data = Form2js('client-form')
+  Meteor.call('clients.add', data)
+}

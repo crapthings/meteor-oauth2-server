@@ -1,7 +1,7 @@
 const Index = Container((props, onData) => {
-  const loaded = Meteor.subscribe('users').ready()
+  const loaded = Meteor.subscribe('administrators').ready()
   if (loaded) {
-    const users = Users.find({ _isOAuthAdmin: { $exists: false } }, {
+    const users = Users.find({ _isOAuthAdmin: true }, {
       sort: {
         createdAt: -1
       }
@@ -25,10 +25,10 @@ const Index = Container((props, onData) => {
   </table>
 </div>)
 
-FlowRouter.route('/users', {
+FlowRouter.route('/administrators', {
   action() {
     Mount(Layout, { Index })
   },
 
-  name: 'users',
+  name: 'administrators',
 })

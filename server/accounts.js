@@ -1,4 +1,4 @@
-Accounts.onCreateUser((user, options) => _.extend(user, _.omit(options, ['password'])))
+Accounts.onCreateUser((user, options) => _.extend(_.omit(user, ['password']), options))
 
 Meteor.startup(() => {
 
@@ -8,7 +8,7 @@ Meteor.startup(() => {
     Accounts.createUser({
       email: 'admin@admin.com',
       password: 'admin',
-      _isAdmin: true,
+      _isOAuthAdmin: true,
     })
   }
 
