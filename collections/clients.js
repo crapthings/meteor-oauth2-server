@@ -14,14 +14,15 @@ if (Meteor.isServer) {
     const userId = this.userId
     if (!userId) return this.ready()
 
-    const user = Users.findOne(userId)
-    if (user._isOAuthAdmin !== true) return this.ready()
+    if (!Users.isOAuthAdmin(userId)) return this.ready()
 
-    return Clients.find({}, {
+    const opts = {
       sort: {
         createdAt: -1
       }
-    })
+    }
+
+    return Clients.find({}, opts)
   })
 
 }
