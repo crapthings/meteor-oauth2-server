@@ -1,28 +1,28 @@
-refreshTokensCollection = new Meteor.Collection('OAuth2RefreshTokens');
+refreshTokensCollection = new Meteor.Collection('OAuth2RefreshTokens')
 refreshTokensCollection.allow({
     insert: function(userId, doc) {
-        return Meteor.isServer && userId && userId === doc.userId;
+        return Meteor.isServer && userId && userId === doc.userId
     },
     update: function(userId, doc, fieldNames, modifier) {
-        return false;
+        return false
     },
     remove: function(userId, doc) {
-        return userId && userId === doc.userId;
+        return userId && userId === doc.userId
     }
-});
+})
 
-authCodesCollection = new Meteor.Collection('OAuth2AuthCodes');
+authCodesCollection = new Meteor.Collection('OAuth2AuthCodes')
 authCodesCollection.allow({
     insert: function(userId, doc) {
-        return Meteor.isServer && userId && userId === doc.userId;
+        return Meteor.isServer && userId && userId === doc.userId
     },
     update: function(userId, doc, fieldNames, modifier) {
-        return false;
+        return false
     },
     remove: function(userId, doc) {
-        return userId && userId === doc.userId;
+        return userId && userId === doc.userId
     }
-});
+})
 
 oAuth2Server = {
     pubSubNames: {
@@ -36,4 +36,4 @@ oAuth2Server = {
         refreshToken: refreshTokensCollection,
         authCode: authCodesCollection
     }
-};
+}
