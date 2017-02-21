@@ -46,7 +46,9 @@ const Index = Container((props, onData) => {
           <td>{client.clientId}</td>
           <td>{client.clientSecret}</td>
           <td>{client.redirectUri}</td>
-          <td></td>
+          <td>
+            <button type='button' onClick={() => remove(client._id)}>删除</button>
+          </td>
         </tr>)}
       </tbody>
     </table>
@@ -65,4 +67,9 @@ function submit(e) {
   e.preventDefault()
   const data = Form2js('client-form')
   Meteor.call('clients.add', data)
+}
+
+function remove(_id) {
+  if (confirm('确定要删除吗？'))
+    Meteor.call('clients.remove', _id)
 }

@@ -14,12 +14,16 @@ const Index = Container((props, onData) => {
       <tr>
         <td>_id</td>
         <td>email</td>
+        <td></td>
       </tr>
     </thead>
     <tbody>
       {users.map(user => <tr key={user._id}>
         <td>{user._id}</td>
         <td>{user.emails[0].address}</td>
+        <td>
+          <button type='button' onClick={() => remove(user._id)}>删除</button>
+        </td>
       </tr>)}
     </tbody>
   </table>
@@ -32,3 +36,8 @@ FlowRouter.route('/users', {
 
   name: 'users',
 })
+
+function remove(_id) {
+  if (confirm('确定要删除吗？'))
+    Meteor.call('clients.remove', _id)
+}
