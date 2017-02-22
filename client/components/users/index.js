@@ -31,7 +31,7 @@ const Index = Container((props, onData) => {
 
 FlowRouter.route('/users', {
   action() {
-    Mount(Layout, { Index })
+    Mount(DefaultLayout, { Index })
   },
 
   name: 'users',

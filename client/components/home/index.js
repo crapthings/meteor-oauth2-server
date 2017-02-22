@@ -29,7 +29,7 @@ FlowRouter.route('/', {
           }
         )
     }
-    Mount(Layout, { Index })
+    Mount(DefaultLayout, { Index })
   },
 
   name: 'home',

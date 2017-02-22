@@ -1,33 +1,25 @@
-const Nav = ({ user }) => <div>
-  <ul>
-    <li>
-      <a href='/'>home</a>
-    </li>
+import { Layout } from 'antd'
 
-    {user._isOAuthAdmin && <li>
-      <a href='/clients'>clients</a>
-    </li>}
+import LeftMenu from './leftmenu'
 
-    <li>
-      <a href='/users'>users</a>
-    </li>
+const { Header, Footer, Sider, Content } = Layout
 
-    {user._isOAuthAdmin && <li>
-      <a href='/administrators'>administrators</a>
-    </li>}
-
-    <li>
-      <a href='/' onClick={() => Meteor.logout()}>logout</a>
-    </li>
-  </ul>
-</div>
-
-Layout = Container((props, onData) => {
+DefaultLayout = Container((props, onData) => {
   const userId = Meteor.userId()
   const user = Meteor.user() || {}
   onData(null, { userId, user })
 })(({ Index, userId, user }) => (userId === user._id) ? <div>
-  <Nav user={user} />
-  <Index />
+  <Layout>
+    <Header></Header>
+    <Layout>
+      <Sider>
+        <LeftMenu user={user} />
+      </Sider>
+      <Content>
+        <Index />
+      </Content>
+    </Layout>
+    <Footer></Footer>
+  </Layout>
 </div> : <Login />
 )
