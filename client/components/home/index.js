@@ -1,7 +1,11 @@
+import { Card } from 'antd'
+
 const Index = Container((props, onData) => {
   onData(null, {})
-})(() => <div>
-  <span>home</span>
+})(() => <div className='ui-padded'>
+  <Card title='home'>
+    <span>home</span>
+  </Card>
 </div>)
 
 FlowRouter.route('/', {

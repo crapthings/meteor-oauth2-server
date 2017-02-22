@@ -1,3 +1,15 @@
+import { Card, Table } from 'antd'
+
+const columns = [{
+  title: '_id',
+  key: '_id',
+  dataIndex: '_id',
+}, {
+  title: 'email',
+  key: 'email',
+  dataIndex: 'emails[0].address',
+}]
+
 const Index = Container((props, onData) => {
   const loaded = Meteor.subscribe('administrators').ready()
   if (loaded) {
@@ -8,21 +20,10 @@ const Index = Container((props, onData) => {
     }).fetch()
     onData(null, { users })
   }
-})(({ users }) => <div>
-  <table>
-    <thead>
-      <tr>
-        <td>_id</td>
-        <td>email</td>
-      </tr>
-    </thead>
-    <tbody>
-      {users.map(user => <tr key={user._id}>
-        <td>{user._id}</td>
-        <td>{user.emails[0].address}</td>
-      </tr>)}
-    </tbody>
-  </table>
+})(({ users }) => <div className='ui-padded'>
+  <Card title='administrators'>
+    <Table dataSource={users} columns={columns} />
+  </Card>
 </div>)
 
 FlowRouter.route('/administrators', {

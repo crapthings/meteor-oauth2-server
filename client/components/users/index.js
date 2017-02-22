@@ -1,3 +1,15 @@
+import { Card, Table } from 'antd'
+
+const columns = [{
+  title: '_id',
+  key: '_id',
+  dataIndex: '_id',
+}, {
+  title: 'email',
+  key: 'email',
+  dataIndex: 'emails[0].address',
+}]
+
 const Index = Container((props, onData) => {
   const loaded = Meteor.subscribe('users').ready()
   if (loaded) {
@@ -8,25 +20,10 @@ const Index = Container((props, onData) => {
     }).fetch()
     onData(null, { users })
   }
-})(({ users }) => <div>
-  <table>
-    <thead>
-      <tr>
-        <td>_id</td>
-        <td>email</td>
-        <td></td>
-      </tr>
-    </thead>
-    <tbody>
-      {users.map(user => <tr key={user._id}>
-        <td>{user._id}</td>
-        <td>{user.emails[0].address}</td>
-        <td>
-          <button type='button' onClick={() => remove(user._id)}>删除</button>
-        </td>
-      </tr>)}
-    </tbody>
-  </table>
+})(({ users }) => <div className='ui-padded'>
+  <Card title='users'>
+    <Table dataSource={users} columns={columns}></Table>
+  </Card>
 </div>)
 
 FlowRouter.route('/users', {
@@ -36,8 +33,3 @@ FlowRouter.route('/users', {
 
   name: 'users',
 })
-
-function remove(_id) {
-  if (confirm('确定要删除吗？'))
-    Meteor.call('clients.remove', _id)
-}

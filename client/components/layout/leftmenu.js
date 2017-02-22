@@ -1,25 +1,25 @@
 import { Menu } from 'antd'
 
-export default ({ user }) => <div>
-  <ul>
-    <li>
-      <a href='/'>home</a>
-    </li>
+const { Item } = Menu
 
-    {user._isOAuthAdmin && <li>
-      <a href='/clients'>clients</a>
-    </li>}
+export default ({ user }) => <Menu>
+  <Item>
+    <a href='/'>home</a>
+  </Item>
 
-    <li>
-      <a href='/users'>users</a>
-    </li>
+  {user._isOAuthAdmin && <Item>
+    <a href='/clients'>clients</a>
+  </Item>}
 
-    {user._isOAuthAdmin && <li>
-      <a href='/administrators'>administrators</a>
-    </li>}
+  <Item>
+    <a href='/users'>users</a>
+  </Item>
 
-    <li>
-      <a href='/' onClick={() => Meteor.logout()}>logout</a>
-    </li>
-  </ul>
-</div>
+  {user._isOAuthAdmin && <Item>
+    <a href='/administrators'>administrators</a>
+  </Item>}
+
+  <Item>
+    <a href='/' onClick={() => Meteor.logout()}>logout</a>
+  </Item>
+</Menu>
