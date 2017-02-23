@@ -53,10 +53,10 @@ function remove(_id) {
   Meteor.call('clients.remove', _id, err => {
     if (err)
       return console.log(err)
-    message.success('删除客户端成功。')
+    // message.success('删除客户端成功。')
   })
 }
 
 function cancel() {
-  message.info('用户取消了操作。')
+  // message.info('用户取消了操作。')
 }

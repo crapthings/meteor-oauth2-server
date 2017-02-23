@@ -6,10 +6,34 @@ Users.isOAuthAdmin = function(userId) {
 }
 
 Meteor.methods({
+  'users.new'(user) {
+    if (!Users.isOAuthAdmin(Meteor.userId())) return
+    _.omit(user, ['_isOAuthAdmin'])
+    Accounts.createUser(user)
+  },
+
+  'users.edit'(_id, user) {
+    if (!Users.isOAuthAdmin(Meteor.userId())) return
+    _.omit(user, ['password'])
+    Users.update(_id, { $set: user })
+  },
+
   'users.remove'(_id) {
     if (!Users.isOAuthAdmin(Meteor.userId())) return
     Users.remove(_id)
-  }
+  },
+
+  'administrators.new'(user) {
+    if (!Users.isOAuthAdmin(Meteor.userId())) return
+    user._isOAuthAdmin = true
+    Accounts.createUser(user)
+  },
+
+  'administrators.edit'(_id, user) {
+    if (!Users.isOAuthAdmin(Meteor.userId())) return
+    _.omit(user, ['password'])
+    Users.update(_id, { $set: user })
+  },
 })
 
 if (Meteor.isServer) {
@@ -52,6 +76,15 @@ if (Meteor.isServer) {
     }
 
     return Users.find(selector, opts)
+  })
+
+  Meteor.publish('user', function(_id) {
+    const userId = this.userId
+    if (!userId) return this.ready()
+
+    if (!Users.isOAuthAdmin(userId)) return this.ready()
+
+    return Users.find({ _id })
   })
 
   Meteor.publish('administrators', function() {

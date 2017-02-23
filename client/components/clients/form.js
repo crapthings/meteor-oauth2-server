@@ -71,12 +71,12 @@ function submit({ e, client }) {
     Meteor.call('clients.new', data, err => {
       if (err) return console.log(err)
       FlowRouter.go('clients')
-      message.success('创建客户端成功')
+      // message.success('创建客户端成功')
     })
   } else {
     Meteor.call('clients.edit', client._id, data, err => {
       if (err) return console.log(err)
-      message.success('更改客户端成功')
+      // message.success('更改客户端成功')
     })
   }
 }

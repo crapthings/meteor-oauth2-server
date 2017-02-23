@@ -1,24 +1,36 @@
-Login = () => <div>
-  <form id='login-form' onSubmit={submit}>
-    <div>
-      <label>
-        <span>email</span>
-        <input type='text' name='email' />
-      </label>
-    </div>
+import { Layout, Card, Form, Input, Button, Icon } from 'antd'
 
-    <div>
-      <label>
-        <span>password</span>
-        <input type='password' name='password' />
-      </label>
-    </div>
+const { Content } = Layout
+const { Item } = Form
 
-    <div>
-      <input type='submit' value='登录' />
+Login = () => <Layout>
+  <Content>
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <div style={{ width: 64 * 6 }}>
+        <Card title='登录'>
+          <Form id='login-form' className='login-form' onSubmit={submit}>
+            <Item>
+              <Input name='email' addonBefore={<Icon type='user' />} />
+            </Item>
+
+            <Item>
+              <Input type='password' name='password' addonBefore={<Icon type='lock' />} />
+            </Item>
+
+            <Item>
+              <Button type='primary' htmlType='submit' className='ui-fit-width'>登录</Button>
+            </Item>
+          </Form>
+        </Card>
+      </div>
     </div>
-  </form>
-</div>
+  </Content>
+</Layout>
 
 function submit(e) {
   e.preventDefault()

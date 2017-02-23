@@ -2,26 +2,26 @@ import Index from './index'
 import New from './new'
 import Edit from './edit'
 
-FlowRouter.route('/clients', {
+FlowRouter.route('/administrators', {
   action() {
     Mount(DefaultLayout, { Index })
   },
 
-  name: 'clients',
+  name: 'administrators',
 })
 
-FlowRouter.route('/clients/new', {
+FlowRouter.route('/administrators/new', {
   action() {
     Mount(DefaultLayout, { Index: New })
   },
 
-  name: 'newClient',
+  name: 'newAdministrator',
 })
 
-FlowRouter.route('/clients/edit/:_id', {
+FlowRouter.route('/administrators/edit/:_id', {
   action() {
     Mount(DefaultLayout, { Index: Edit })
   },
 
-  name: 'editClient',
+  name: 'editAdministrator',
 })

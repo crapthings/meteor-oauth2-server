@@ -11,7 +11,7 @@ const columns = [{
   dataIndex: 'emails[0].address',
 }]
 
-const Index = Container((props, onData) => {
+export default Container((props, onData) => {
   const loaded = Meteor.subscribe('administrators').ready()
   if (loaded) {
     const users = Users.find({ _isOAuthAdmin: true }, {
@@ -22,17 +22,7 @@ const Index = Container((props, onData) => {
     onData(null, { users })
   }
 })(({ users }) => <div className='ui-padded'>
-  <Card title='administrators' extra={
-    <Button type="primary" shape="circle" icon="search" />
-  }>
-    <Table dataSource={users} columns={columns} />
+  <Card title='administrators' extra={<a href='/administrators/new'>创建</a>}>
+    <Table rowKey='_id' dataSource={users} columns={columns} />
   </Card>
 </div>)
-
-FlowRouter.route('/administrators', {
-  action() {
-    Mount(DefaultLayout, { Index })
-  },
-
-  name: 'administrators',
-})
