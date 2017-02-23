@@ -3,8 +3,8 @@ import { Card } from 'antd'
 const Index = Container((props, onData) => {
   onData(null, {})
 })(() => <div className='ui-padded'>
-  <Card title='home'>
-    <span>home</span>
+  <Card title='首页'>
+    <span>首页</span>
   </Card>
 </div>)
 

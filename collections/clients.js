@@ -1,11 +1,18 @@
 Clients = oAuth2Server.collections.client
 
 Meteor.methods({
-  'clients.add'(data) {
+  'clients.new'(data) {
     if (!Users.isOAuthAdmin(Meteor.userId())) return
     data.createdAt = new Date()
     data.updatedAt = new Date()
+    data.active = true
     Clients.insert(data)
+  },
+
+  'clients.edit'(_id, data) {
+    if (!Users.isOAuthAdmin(Meteor.userId())) return
+    data.updatedAt = new Date()
+    Clients.update(_id, { $set: data })
   },
 
   'clients.remove'(_id) {
@@ -29,6 +36,15 @@ if (Meteor.isServer) {
     }
 
     return Clients.find({}, opts)
+  })
+
+  Meteor.publish('client', function(_id) {
+    const userId = this.userId
+    if (!userId) return this.ready()
+
+    if (!Users.isOAuthAdmin(userId)) return this.ready()
+
+    return Clients.find({ _id })
   })
 
 }

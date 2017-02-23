@@ -22,7 +22,7 @@ const Index = Container((props, onData) => {
     onData(null, { users })
   }
 })(({ users }) => <div className='ui-padded'>
-  <Card title='users'>
+  <Card title='用户账号'>
     <Table dataSource={users} columns={columns}></Table>
   </Card>
 </div>)
