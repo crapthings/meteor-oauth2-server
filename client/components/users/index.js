@@ -4,6 +4,7 @@ const columns = [{
   title: '_id',
   key: '_id',
   dataIndex: '_id',
+  width: 192,
 }, {
   title: 'email',
   key: 'email',

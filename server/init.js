@@ -23,7 +23,8 @@ Meteor.startup(() => {
       clientName: 'My Client Name',
       clientId: 'clientApplication',
       clientSecret: '12345',
-      redirectUri: 'http://localhost:3200/_oauth/MeteorOAuth2Server'
+      redirectUri: 'http://localhost:3200/_oauth/MeteorOAuth2Server',
+      active: true,
     })
   }
 

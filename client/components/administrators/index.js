@@ -1,9 +1,10 @@
-import { Card, Table } from 'antd'
+import { Card, Table, Button } from 'antd'
 
 const columns = [{
   title: '_id',
   key: '_id',
   dataIndex: '_id',
+  width: 192,
 }, {
   title: 'email',
   key: 'email',
@@ -21,7 +22,9 @@ const Index = Container((props, onData) => {
     onData(null, { users })
   }
 })(({ users }) => <div className='ui-padded'>
-  <Card title='administrators'>
+  <Card title='administrators' extra={
+    <Button type="primary" shape="circle" icon="search" />
+  }>
     <Table dataSource={users} columns={columns} />
   </Card>
 </div>)
