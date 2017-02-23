@@ -12,7 +12,7 @@ const tracker = (props, onData) => {
 }
 
 const index = ({ user }) => <div className='ui-padded'>
-  <Card title='编辑用户账号' extra={<a href='/users'>返回</a>}>
+  <Card title='编辑用户账号' extra={<a href='/administrators'>返回</a>}>
     <Form user={user} />
   </Card>
 </div>
