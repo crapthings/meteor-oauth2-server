@@ -48,12 +48,12 @@ function submit({ e, user }) {
     Meteor.call('administrators.new', data, err => {
       if (err) return console.log(err)
       FlowRouter.go('users')
-      // message.success('创建客户端成功')
+      message.success('创建客户端成功')
     })
   } else {
     Meteor.call('administrators.edit', user._id, data, err => {
       if (err) return console.log(err)
-      // message.success('更改客户端成功')
+      message.success('更改客户端成功')
     })
   }
 }
