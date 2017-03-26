@@ -1,8 +1,8 @@
 // get the node modules.
 var express = Npm.require('express'),
     bodyParser = Npm.require('body-parser'),
-    oauthserver = Npm.require('oauth2-server');
-
+    oauthserver = Npm.require('oauth2-server'),
+    contentTypeOverride = Npm.require('express-content-type-override');
 
 // configure the server-side collections. The rest of the collections
 // exist in common.js and are for both client and server.
@@ -161,6 +161,10 @@ methods[oAuth2Server.methodNames.authCodeGrant] = function(clientId, redirectUri
 
         // create mock express app.
         var mockApp = express();
+        mockApp.use(contentTypeOverride({
+            contentType: 'application/x-www-form-urlencoded',
+            charset: 'utf-8'
+        }))
         var req = mockApp.request;
 
         console.log(req)
