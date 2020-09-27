@@ -149,8 +149,6 @@ methods[oAuth2Server.methodNames.authCodeGrant] = function (clientId, redirectUr
     // listen for redirect calls.
     const res = mockApp.response
 
-    console.log(1)
-
     res.redirect = function (uri) {
       response.redirectToUri = uri
       // we have what we need, trigger the done function with the response data.

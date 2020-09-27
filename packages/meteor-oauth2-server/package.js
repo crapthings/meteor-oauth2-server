@@ -20,8 +20,8 @@ Package.onUse(function(api) {
 })
 
 Npm.depends({
-  'express': '4.14.1',
-  'body-parser': '1.16.1',
+  'express': '4.17.1',
+  'body-parser': '1.19.0',
+  'express-content-type-override': '1.1.0',
   'oauth2-server': '2.4.1',
-  'express-content-type-override': '1.1.0'
 })
