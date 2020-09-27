@@ -1,19 +1,18 @@
 {
-  "name": "resource-server",
+  "name": "meteor-oauth2-server",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "antd": "^2.7.3",
-    "babel-runtime": "6.18.0",
-    "form2js": "^1.0.0",
-    "indexof": "0.0.1",
-    "lodash": "^4.17.4",
-    "meteor-node-stubs": "~0.2.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-komposer": "^1.13.1",
-    "react-mounter": "^1.2.0"
+    "@ant-design/icons": "^4.2.2",
+    "@babel/runtime": "^7.11.2",
+    "antd": "^4.6.5",
+    "dayjs": "^1.8.36",
+    "lodash": "^4.17.20",
+    "meteor-node-stubs": "^1.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "@crapthings/react-mounter": "^1.2.0"
   }
 }
