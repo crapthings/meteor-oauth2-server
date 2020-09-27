@@ -135,8 +135,6 @@ methods[oAuth2Server.methodNames.authCodeGrant] = function (clientId, redirectUr
 
     const req = mockApp.request
 
-    console.log(req)
-
     // set the request body values. In a typical express setup, the body
     // would be parsed by the body-parser package. We are cutting out
     // the middle man, so to speak.
@@ -149,23 +147,25 @@ methods[oAuth2Server.methodNames.authCodeGrant] = function (clientId, redirectUr
     req.query = {}
 
     // listen for redirect calls.
-    var res = mockApp.response
+    const res = mockApp.response
+
+    console.log(1)
 
     res.redirect = function (uri) {
       response.redirectToUri = uri
       // we have what we need, trigger the done function with the response data.
       done(null, response)
-
-      // listen for errors.
-      const next = function (err) {
-        response.error = err
-        // we have what we need, trigger the done function with the response data.
-        done(null, response)
-      }
-
-      // call the async function with the mocked params.
-      authCodeGrantFn(req, res, next)
     }
+
+    // listen for errors.
+    const next = function (err) {
+      response.error = err
+      // we have what we need, trigger the done function with the response data.
+      done(null, response)
+    }
+
+    // call the async function with the mocked params.
+    authCodeGrantFn(req, res, next)
   })
 
     // run the auth code grant function in a synchronous manner.

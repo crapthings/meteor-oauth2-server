@@ -22,21 +22,18 @@ FlowRouter.route('/', {
       state,
     } = queryParams
 
-    if (client_id, redirect_uri, response_type, scope, state) {
-      oAuth2Server.callMethod.authCodeGrant(
-        client_id,
-        redirect_uri,
-        response_type,
-        scope && scope.split(' '),
-        state,
-        function(err, result) {
-          console.log(err, result)
-          if (result.success) {
-            window.location = result.redirectToUri
-          }
+    // console.log(queryParams)
+
+    if (client_id && redirect_uri && response_type && scope && state) {
+      console.log(2)
+      oAuth2Server.callMethod.authCodeGrant(client_id, redirect_uri, response_type, scope?.split(' '), state, function (err, result) {
+        console.log(err, result)
+        if (result.success) {
+          window.location = result.redirectToUri
         }
-      )
+      })
     }
+
     Mount(DefaultLayout, { Index })
   },
 
