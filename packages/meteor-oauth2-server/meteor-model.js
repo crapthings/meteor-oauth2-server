@@ -1,213 +1,103 @@
-/**
- * A oauth2-server model for dealing with the meteor collections. Original code
- * from: https://github.com/RocketChat/rocketchat-oauth2-server/blob/master/model.coffee
- * Modifications and improvements have been made.
- * This class is used a callback model for oauth2-server. oauth2-server runs it's calls
- * in a different context and fiber. Doing so can get really messy when attempting to
- * run Meteor code, like Collection calls. We work-around this problem by creating
- * instance methods are runtime that are proxied through Meteor.bindEnvironment.
- * This strategy allows us to specify the this context.
- * Defining the class with prototype methods defined by Meteor.bindEnvironment
- * would ensure we lose our this context when the method executes.
- */
-MeteorModel = (function() {
-    function MeteorModel(accessTokenCollection,
-                         refreshTokenCollection,
-                         clientCollection,
-                         authCodeCollection,
-                         debug) {
-        this.accessTokenCollection = accessTokenCollection;
-        this.refreshTokenCollection = refreshTokenCollection;
-        this.clientCollection = clientCollection;
-        this.authCodeCollection = authCodeCollection;
-        this.debug = debug;
+MeteorModel = (function () {
+  function MeteorModel (accessTokenCollection, refreshTokenCollection, clientCollection, authCodeCollection, debug) {
+    const dlog = (msg) => debug === true && console.log('[OAuth2Server]', msg)
 
-        ///////////////////
-        // Defining the methods.
-        ///////////////////
+    this.accessTokenCollection = accessTokenCollection
+    this.refreshTokenCollection = refreshTokenCollection
+    this.clientCollection = clientCollection
+    this.authCodeCollection = authCodeCollection
+    this.debug = debug
 
-        this.getAccessToken = Meteor.bindEnvironment(
-                function (bearerToken, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in getAccessToken (bearerToken:', bearerToken, ')');
-                }
+    this.getAccessToken = Meteor.bindEnvironment(function (bearerToken, callback) {
+      dlog(`in getAccessToken (bearerToken: ${bearerToken})`)
 
-                try {
-                    var token = this.accessTokenCollection.findOne({
-                        accessToken: bearerToken
-                    });
+      try {
+        const token = this.accessTokenCollection.findOne({ accessToken: bearerToken })
+        callback(null, token)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
 
-                    callback(null, token);
+    this.getClient = Meteor.bindEnvironment(function (clientId, clientSecret, callback) {
+      dlog(`'in getClient (clientId: ${clientId}, clientSecret: ${clientSecret})`)
 
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
+      try {
+        let client
+        if (clientSecret === null) {
+          client = this.clientCollection.findOne({ active: true, clientId: clientId })
+        } else {
+          client = this.clientCollection.findOne({ active: true, clientId: clientId, clientSecret: clientSecret })
+        }
+        callback(null, client)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
 
-        this.getClient = Meteor.bindEnvironment(
-            function (clientId, clientSecret, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in getClient (clientId:', clientId, ', clientSecret:', clientSecret, ')');
-                }
+    this.grantTypeAllowed = Meteor.bindEnvironment(function (clientId, grantType, callback) {
+      dlog(`in grantTypeAllowed (clientId: ${clientId}, grantType: ${grantType})`)
 
-                try {
-                    var client;
-                    if (clientSecret == null) {
-                        client = this.clientCollection.findOne({
-                            active: true,
-                            clientId: clientId
-                        });
-                    } else {
-                        client = this.clientCollection.findOne({
-                            active: true,
-                            clientId: clientId,
-                            clientSecret: clientSecret
-                        });
-                    }
+      callback(false, grantType === 'authorization_code')
+    }, null, this)
 
-                    callback(null, client);
+    this.saveAccessToken = Meteor.bindEnvironment(function (token, clientId, expires, user, callback) {
+      dlog(`in saveAccessToken (token: ${token}, clientId: ${clientId}, user: ${user}, expires: ${expires})`)
 
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
+      try {
+        const tokenId = this.accessTokenCollection.insert({ accessToken: token, clientId: clientId, userId: user.id, expires: expires })
+        callback(null, tokenId)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
 
+    this.getAuthCode = Meteor.bindEnvironment(function (authCode, callback) {
+      dlog(`in getAuthCode (authCode: ${authCode})`)
 
-        this.grantTypeAllowed = Meteor.bindEnvironment(
-            function (clientId, grantType, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in grantTypeAllowed (clientId:', clientId, ', grantType:', grantType + ')');
-                }
+      try {
+        const code = this.authCodeCollection.findOne({ authCode: authCode })
+        callback(null, code)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
 
-                callback(false, grantType === 'authorization_code');
-            },
-            null, // exception handler
-            this // this context.
-        );
+    this.saveAuthCode = Meteor.bindEnvironment(function (code, clientId, expires, user, callback) {
+      dlog(`in saveAuthCode (code: ${code}, clientId: ${clientId}, expires: ${expires}, user: ${user})`)
 
-        this.saveAccessToken = Meteor.bindEnvironment(
-            function (token, clientId, expires, user, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in saveAccessToken (token:', token, ', clientId:', clientId, ', user:', user, ', expires:', expires, ')');
-                }
+      try {
+        this.authCodeCollection.remove({ authCode: code })
+        const codeId = this.authCodeCollection.insert({ authCode: code, clientId: clientId, userId: user.id, expires: expires })
+        callback(null, codeId)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
 
-                try {
-                    var tokenId = this.accessTokenCollection.insert({
-                        accessToken: token,
-                        clientId: clientId,
-                        userId: user.id,
-                        expires: expires
-                    });
+    this.saveRefreshToken = Meteor.bindEnvironment(function (token, clientId, expires, user, callback) {
+      dlog(`in saveRefreshToken (token: ${token}, clientId: ${clientId}, user: ${user}, expires: ${expires})`)
 
-                    callback(null, tokenId);
+      try {
+        this.refreshTokenCollection.remove({ refreshToken: token })
+        const tokenId = this.refreshTokenCollection.insert({ refreshToken: token, clientId: clientId, userId: user.id, })
+        callback(null, tokenId)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
 
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
+    this.getRefreshToken = Meteor.bindEnvironment(function (refreshToken, callback) {
+      dlog(`in getRefreshToken (refreshToken: ${refreshToken})`)
 
-        this.getAuthCode = Meteor.bindEnvironment(
-            function (authCode, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in getAuthCode (authCode: ' + authCode + ')');
-                }
+      try {
+        const token = this.refreshTokenCollection.findOne({ refreshToken: refreshToken })
+        callback(null, token)
+      } catch (e) {
+        callback(e)
+      }
+    }, null, this)
+  }
 
-                try {
-                    var code = this.authCodeCollection.findOne({
-                        authCode: authCode
-                    });
-
-                    callback(null, code);
-
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
-
-        this.saveAuthCode = Meteor.bindEnvironment(
-            function (code, clientId, expires, user, callback) {
-                Meteor.bindEnvironment(code, clientId, expires, user, callback)
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in saveAuthCode (code:', code, ', clientId:', clientId, ', expires:', expires, ', user:', user, ')');
-                }
-
-                try {
-                    this.authCodeCollection.remove({authCode: code});
-                    var codeId = this.authCodeCollection.insert({
-                        authCode: code,
-                        clientId: clientId,
-                        userId: user.id,
-                        expires: expires
-                    });
-
-                    callback(null, codeId);
-
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
-
-        this.saveRefreshToken = Meteor.bindEnvironment(
-            function (token, clientId, expires, user, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in saveRefreshToken (token:', token, ', clientId:', clientId, ', user:', user, ', expires:', expires, ')');
-                }
-
-                try {
-                    this.refreshTokenCollection.remove({refreshToken: token});
-                    var tokenId = this.refreshTokenCollection.insert({
-                        refreshToken: token,
-                        clientId: clientId,
-                        userId: user.id,
-                        expires: expires
-                    });
-
-                    callback(null, tokenId);
-
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
-
-        this.getRefreshToken = Meteor.bindEnvironment(
-            function (refreshToken, callback) {
-                if (this.debug === true) {
-                    console.log('[OAuth2Server]', 'in getRefreshToken (refreshToken: ' + refreshToken + ')');
-                }
-
-                try {
-                    var token = this.refreshTokenCollection.findOne({
-                        refreshToken: refreshToken
-                    });
-
-                    callback(null, token);
-
-                } catch (e) {
-                    callback(e);
-                }
-            },
-            null, // exception handler
-            this // this context.
-        );
-    };
-
-    return MeteorModel;
-})();
+  return MeteorModel
+})()

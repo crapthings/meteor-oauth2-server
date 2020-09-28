@@ -174,7 +174,7 @@ methods[oAuth2Server.methodNames.authCodeGrant] = function (clientId, redirectUr
 
   // set the authorization code.
   if (result.redirectToUri) {
-    var match = result.redirectToUri.match(/[?&]code=([0-9a-f]+)/)
+    const match = result.redirectToUri.match(/[?&]code=([0-9a-f]+)/)
     if (match.length > 1) {
       result.authorizationCode = match[1]
     }
